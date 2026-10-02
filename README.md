@@ -1,338 +1,53 @@
-# TaxueSkills
+# taxue skills — 踏雪决策系统
 
-<p align="center">
-  <img src="assets/readme/hero.svg" alt="TaxueSkills — 让 AI 不只回答问题，而是帮你做决策" width="100%" />
-</p>
+13 个互相路由的技能：**1 个总入口 + 12 个子技能**。一个入口接住模糊的问题，路由到对的方法论，收束成可执行的行动。
 
-**让 AI 不只回答问题，而是帮你做决策。**
+13 mutually-routed skills: **1 entry point + 12 sub-skills**. One entry catches the vague question, routes to the right method, and lands on an actionable next step.
 
-不是又一个 prompt 工具箱，是一套人生决策系统：26 个 Skill，覆盖问题消解、商业判断、行业认知、本质洞察、情绪处理、关系沟通、**职业规划（含简历母版→多版本 HTML/PDF）**、内容创作全流程。
+## 技能清单 / Skills
 
-传统 AI 给一段回答就结束。Taxue 会追问、会反驳、会把模糊词定义清楚，再推你迈出第一步——回答是起点，衔接下一步才是终点。
+| Skill | Version | 定位 | Trigger (EN) |
+|---|---|---|---|
+| [taxue](skills/taxue/) | 3.5.5 | 总入口：路由 + 收束 | "stuck", "help me decide" |
+| [taxue-diagnosis](skills/taxue-diagnosis/) | 4.1.0 | 系统诊断 + 商业判断 + 多视角 | "life audit", "is this business viable" |
+| [taxue-solve](skills/taxue-solve/) | 4.1.0 | 问题清洗 + 执行落地 | "what should I do", "how to execute" |
+| [taxue-insight](skills/taxue-insight/) | 3.4.1 | 一句话看透本质 | "what's the essence", "root cause" |
+| [taxue-career](skills/taxue-career/) | 3.7.0 | 职业全周期：方向到入职 | "career change", "interview prep" |
+| [taxue-job-search](skills/taxue-job-search/) | 4.1.0 | 真实在招岗位搜索 | "who's hiring", "job listings" |
+| [taxue-content](skills/taxue-content/) | 4.1.0 | 内容创作 + 流量 | "content creation", "headline" |
+| [taxue-industry](skills/taxue-industry/) | 4.1.0 | 行业研究 + 用户研究 | "market analysis", "competitor analysis" |
+| [taxue-learn](skills/taxue-learn/) | 4.5.0 | 学习方法 + 素材库 + 连续学习 | "how do I learn this", "keep learning" |
+| [taxue-shopping](skills/taxue-shopping/) | 4.1.0 | 购物决策 + 家居避坑 | "worth it", "best price" |
+| [taxue-calm](skills/taxue-calm/) | 3.4.1 | 情绪转化为可操作的问题 | "feeling anxious", "burned out" |
+| [taxue-state](skills/taxue-state/) | 4.1.0 | 状态存档 + 笔记归档 | "resume last session", "log this decision" |
+| [taxue-build](skills/taxue-build/) | 4.1.0 | 经验沉淀为工具 | "turn this into a tool" |
 
-**最新版本：v3.4.2**（2026-08-04）— 求职系列家族 **3.1.0**：简历产出层（母版 · 投递版本 · 独立 HTML 打印 PDF · ATS · 匹配质检）全量同步。
+## 安装 / Install
 
-[**中文文档**](#中文版) | [安装](#usage) | [GitHub](https://github.com/taxueseek/taxueskills)
+- **单个技能**：把 `skills/<name>/` 复制进你的 skill 目录（如 `~/.claude/skills/`、`~/.agents/skills/`）。
+- **整包**：从 [Releases](../../releases) 下载 zip。
+- **推荐**：从 `taxue/` 总入口开始——它会路由到对的子技能，不用记 13 个名字。
 
-<a id="cn-section"></a>
+Recommended: start from `taxue/` — it routes to the right sub-skill for you.
 
-## 中文版
+## 个人数据 / Personal data
 
-### 这是什么
+技能**零硬编码路径**。涉及个人知识库（素材库、原子库、学习档案）时走运行时发现链：
 
-**踏雪决策系统。**
+对话指定 → 环境变量 `TAXUE_VAULT` → `~/.taxue/config.json` → 常见位置探测（`~/素材库`、`~/知识库`）→ 三态问询（**接入已有库 / 从零新建 / 无库轻用**）。
 
-工作流 + 思维模型，不是话术箱。每个 Skill 对准一类真实困境：不是让 AI 说得更像人，是帮你从纠结走到行动。
+无库也可用：学习档案是纯文件机制，放当前工作区即可；素材检索为可选增强。详见 [skills/taxue/references/vault.md](skills/taxue/references/vault.md)。
 
-你问「我该不该辞职」，普通 Chat 会给面面俱到的分析然后停住——你知道了，但做不动。Taxue 会先问「你有多久没涨薪」「存款够几个月」，若痛苦在主导，会先把情绪问题拆开。对话不在第一段分析里结束。
+No hardcoded paths. Personal data locations are resolved at runtime — connect your own knowledge base, build one from scratch, or use the methods without any vault. See [skills/taxue/references/vault.md](skills/taxue/references/vault.md).
 
-### 为什么需要它
+## 设计约定 / Design notes
 
-多数时候对 AI 失望，不是它不够聪明，是它不懂你的处境。
+- **路由单点真源**：子技能信号与别名集中在 `skills/taxue/references/skill_registry.json`，主入口路由表由此派生。
+- **连招收尾**：子技能输出收束后按 `combo_map` 推荐下一条路径，至多一个，不硬连。
+- **声线分化**：12 个子技能各有说话人格（诊断像做过生意的人，solve 像带过项目的老手，learn 像苏格拉底式导师）。
 
-| 普通 AI 会 | Taxue 会 |
-|-----------|---------|
-| 给你一段全面的分析 | 先定义「容易」「好」「适合」到底指什么 |
-| 面面俱到地列出一二三四 | 问你「说的是 A 还是 B」——经常是两条完全不同的路 |
-| 回答完就停止 | 尾句自然织进下一步（`/xxx` 走一遍再回来） |
-| 永远给建议，不给判断 | 必要时直接说「这事做不成，因为……」 |
+## Changelog
 
-先把词定义清楚，再决定做不做。多数纠结在这一步就会松动。
+见 [CHANGELOG.md](CHANGELOG.md)。历史版本（v3.4.2 及更早）中的 career 子技能已并入 `taxue-career` 单件，旧 Release 资产由本版取代。
 
-### 怎么工作的
-
-你发一个问题，Taxue 先扫一遍：这是不是伪问题？信息够不够？有没有语言陷阱（比如「容易」没定义）。然后匹配并激活最合适的 Skill。不是死板查表，是看问题本身该往哪走。输出的时候，多维度分析加判断加一个精准的追问或行动建议，一气呵成。对话不停，自然衔接到下一步。
-
-你看不到分段标题（什么「视角A」「视角B」），只看到一个老手在跟你聊，他同时想透了三层，但只说「事情是这样的」。遇到复杂问题，Taxue 内部会同时请几个 Skill 各自出判断，然后拼起来给你一个全局视角。你拿到的不是分段报告，是一个人看到了全部之后的判断。
-
-前面那些 Skill 不是孤岛，会自然衔接。比如你想清楚了一个方向，它会说「接下来拆成步骤」；你写完一篇好内容，它会说「这条值得入库」。
-
-<a id="usage"></a>
-
-## 使用文档
-
-### 快速开始
-
-```bash
-# 方式一：npx 一键安装（推荐）
-npx -y skills add taxueseek/taxueskills -g --all
-
-# 方式二：手动安装
-cd ~/.claude/skills
-git clone https://github.com/taxueseek/taxueskills.git temp
-cp -r temp/taxue* . && rm -rf temp
-```
-
-安装完成后，在任意对话中输入：
-
-```
-/taxue 输入你的问题就行
-```
-
-### 适用平台
-
-任何支持本地 SKILL.md 加载的 Agent 都能用：
-
-- **Claude Code**：安装到 `~/.claude/skills/`
-- **OpenAI Codex**：安装到 `~/.codex/skills/`
-- **Grok Build**：安装到 `~/.grok/skills/`
-- **Cursor**：安装到 `.cursor/skills/`
-- **其他平台**：参考各平台的 Skill 加载目录
-
-### 核心能力
-
-#### 决策引擎（你想清楚一件事）
-
-| 斜杠命令 | 它能做什么 | 典型场景 |
-|---------|-----------|---------|
-| `/taxue` | 主入口，自动路由到最对的 Skill | 任何纠结、迷茫、卡住的问题，直接 `/taxue` 就行 |
-| `/taxue-solve` | 5 层消解漏斗，先判断问题成不成立 | 「怎么办」「卡住了」「两个工作选哪个」 |
-| `/taxue-insight` | 一句话穿透本质，不是长分析 | 想看看一件事的底层逻辑、规律、结构 |
-| `/taxue-roundtable` | 多视角碰撞，专门暴露你想不到的盲区 | 重大决定前，想让正反方自己打一架 |
-| `/taxue-breakdown` | 把模糊目标拆成今天能动的第一步 | 想法太多不知从哪开始、事情太复杂拆不动 |
-| `/taxue-business` | 快诊 3 问定生死：谁付钱？凭什么？天花板？ | 副业、变现、创业——看一个机会能不能做 |
-
-#### 关系与情绪（你跟世界的冲突）
-
-| 斜杠命令 | 它能做什么 | 典型场景 |
-|---------|-----------|---------|
-| `/taxue-calm` | 先处理情绪，再处理事。因为情绪是信号不是病灶 | 焦虑、内耗、睡不着、感觉自己撑不住了 |
-| `/taxue-relate` | 看清利益结构，给你能直接用的措辞 | 跟伴侣吵架、跟老板谈判、合伙人闹翻了 |
-| `/taxue-speak` | 练说话。汇报、演讲、公开发言、紧张表达 | 下周要述职、面试说话紧张、讲不到重点 |
-
-#### 认知升级（你看清一件事）
-
-| 斜杠命令 | 它能做什么 | 典型场景 |
-|---------|-----------|---------|
-| `/taxue-industry` | 快速摸清一个行业。概览 / 深度 / 商业判断三层 | 调研一个想做的新行业、找对标、为什么这个能火 |
-| `/taxue-learn` | 把信息变成能力。不是「如何学习」，是「学了不再忘」 | 看了很多书啥也记不住、费曼学习法用不起来 |
-| `/taxue-content` | 从选题到终稿的创作流水线 | 「帮我写」「小红书」「公众号」「标题怎么写」 |
-| `/taxue-material` | 个人创作资产库。检索、入库、盘点、生成选题 | 找灵感、金句、案例库、整理收件箱 |
-
-#### 职业发展（你走稳一段路）· 家族 v3.1.0
-
-| 斜杠命令 | 它能做什么 |
-|---------|------|
-| `/taxue-career` | 主入口：身份（求职者/HR）+ 卡点路由 + 人群/行业策略 |
-| `/taxue-career-direction` | 方向诊断：能做什么 × 市场要什么 |
-| `/taxue-career-resume` | **简历/JD 引擎 + 产出层**：母版 → 多版本 → HTML/PDF/ATS |
-| `/taxue-career-channel` | 渠道与内推：10 份精准 > 100 份海投 |
-| `/taxue-career-interview` | 模拟面试 / 离职沟通 |
-| `/taxue-career-offer` | Offer 四维决策 + 谈薪 |
-| `/taxue-career-onboard` | 入职前 90 天 |
-| `/taxue-career-fail` | 失败复盘：找真正卡住的那一个关节 |
-| `/taxue-job-search` | 按地区/学历/企业类型搜真实在招岗位（v2.2） |
-
-<p align="center">
-  <img src="assets/readme/career-pipeline.svg" alt="简历产出层：master.json → custom.json → HTML / PDF / ATS" width="100%" />
-</p>
-
-**简历产出层（v3.4.2 重点）**
-
-1. 建立 **母版** `master.json`（唯一数据真源，只增不减）
-2. 按 JD 写 **投递版本** `custom.json`（排序 / 裁剪 / 覆盖）
-3. `render_resume.py` 输出独立 `resume.html`（零外部依赖、A4 打印）+ `resume.txt`（ATS）
-4. `jd_resume_match.py` 做硬门槛 / 技能覆盖 / 量化指标质检
-5. 归档到 `versions/YYYY-MM-DD_公司_岗位/`，已投版本不可变
-
-#### 基建（你不丢失任何进度）
-
-| 斜杠命令 | 它能做什么 |
-|---------|------|
-| `/taxue-save` | 存档当前进度、标记决策和验证标准、回来能接着聊 |
-| `/taxue-skill` | 诊断现有的 Skill。触发太宽？token 太重？逻辑太乱？ |
-| `/taxue-upgrade` | 一键升级所有 Skill 到最新版本 |
-
-### 工作流联动（Skill 之间如何串联）
-
-Taxue 的每个 Skill 不是孤岛，它们会自然衔接。常见路线：
-
-```
-# 从想法到方案
-solve -> breakdown -> build（想清楚 -> 拆步骤 -> 固化成工具）
-
-# 从选题到发布
-content -> insight -> content -> material（写不透就去挖本质，写完入库）
-
-# 从情绪到行动
-calm -> solve -> relate（情绪理清 -> 解决事 -> 推动关系）
-
-# 从方向到入职（求职主线）
-career -> direction -> resume（母版+投递版 HTML）-> channel -> interview -> offer -> onboard
-                                                      |
-                                                （失败时）
-                                                career-fail -> direction
-
-# 简历定向投递（产出层）
-master.json + JD -> custom.json -> resume.html / resume.txt / match 报告 -> 打印 PDF
-```
-
-### 一个完整的对话示例
-
-**用户：** `/taxue 自媒体有多容易做`
-
-**Taxue：**
-
-「自媒体有多容易做」——「容易」没定义。注册账号发视频叫容易，月入万也比容易，但这两个「容易」隔着一道变现闭环。
-
-注册发内容：启动门槛极低，但 2024 之后全赛道自然流量大幅缩水，纯靠冷启动的成功率不足百分之三。大部分新人发 10 到 20 条没反馈就停更了。
-
-月入过万：行业前百分之二十，普通人平均需要 8 到 12 个月持续输出。核心难点不是做内容本身，是跑不通「定位-流量-人群-变现」的闭环。百分之八十的人卡在这一步。
-
-需要确认一件事：**变现靠平台流量分成，还是卖自有产品/服务？** 两个方向的资源要求和打法完全不同。回答这一个，判断就能缩到具体路径。
-
-**用户：** 靠卖课。英语教育方向。现在有教学经验但没做过自媒体。
-
-**Taxue（此时已自然衔接到 /taxue-industry）：**
-
-英语教育方向。这个赛道的关键数据：知识付费整体增速放缓，但细分领域（考试类雅思/考研、职场英语、少儿英语家长课）头部效应极强。CR5 大概占百分之六十以上。
-
-你是谁很关键。「有教学经验」是供给端能力，但用户买的是「看到效果的承诺」。你的内容能不能让人看了就说「这个老师懂我」，比你教得好不好更重要。
-
-三个验证动作：
-
-1. 找到你目标学员在小红书和 B 站的聚集地，看他们吐槽什么。那就是需求。
-2. 找 5 个英语教育类账号，看他们第一条爆款是什么时候发的。判断时间窗口。
-3. 录 3 条试听课发出去（不用完美），看有没有人问你「怎么买」。
-
-如果第 3 步有 3 人以上问，这个方向成立。如果 0 人问，内容定位需要调。
-
-验证标准：3 个月，1000 粉丝加 10 人付费咨询。能，继续。不能，换细分方向或换平台。
-
-### 设计哲学
-
-1. **先澄清，后解决。** 百分之八十的纠结是因为问题本身有问题。在错的问题上跑全程是浪费。
-2. **多个角度看，一个声音说。** 不给你看分段分析（视角A视角B判断报告），只给你一个综合判断。因为真实决策从来不是分项打分。
-3. **够用就好。** 追求当前最有效的一步，不追求完美方案。完美是行动的敌人。
-4. **推动行动。** 不说「你可以考虑」，说「第一步做 X，如果 Y 发生就继续，不发生就停」。
-5. **对话不该停在第一段分析。** 结尾自然衔接到下一个 Skill。让决策是一段旅程，不是一个快照。
-6. **能固化则不复述。** 重复出现的问题应该被写成 Skill，不是一次次重新解答。
-7. **入口做减法。** 入口只管调度，能力下沉到子 Skill。入口没有胖逻辑。
-
-### 功能对比：传统 AI vs Taxue
-
-| 维度 | ChatGPT 等传统 AI | Taxue |
-|------|-----------------|-------|
-| 问题处理 | 直接给答案 | 先消解问题，定义清楚再答 |
-| 语境利用 | 每轮独立，不记忆约束 | 自动结合你的时间/资金/技能做判断 |
-| 决策深度 | 给建议，不给决策 | 给判断，有时会直接说「不能做」 |
-| 输出格式 | 篇幅较长的列表 | 先一句话判断，再展开 |
-| 对话延续 | 回答即结束 | 自然衔接到下一个该走的方向 |
-| 盲区处理 | 试图一面俱全 | 主动追问你没说但关键的信息 |
-| 情绪处理 | 通常忽略或仅表面安抚 | 自动识别情绪信号，先处理再解题 |
-| 决策问责 | 无法验证 | 存档决策，三个月后还可以校准 |
-
-### 常见问题
-
-**Q：和直接用 ChatGPT 有什么区别？**
-
-A：ChatGPT 给你一个回答，Taxue 开启一段旅程。ChatGPT 是搜索引擎，Taxue 是决策教练。会追问、会反驳、会帮你把模糊的想法变成具体的下一步。
-
-**Q：/taxue 和直接用子 Skill（如 /taxue-solve）有什么区别？**
-
-A：/taxue 是入口。你不用纠结该走哪个，它会自己判断并路由到对的 Skill。如果你明确知道要哪个（比如「我就是想拆解目标」），可以直接用 `/taxue-breakdown` 跳过路由。
-
-**Q：26 个 Skill 需要都学会吗？**
-
-A：不需要。你只需要记住 `/t` 或 `/taxue` 加你的问题。入口会自动送你去该去的地方。其他子 Skill 在你需要时会自动激活。
-
-**Q：适合什么样的场景？**
-
-A：适合「我想不清楚」「我卡住了」「我不确定这件事该不该做」这类决策型问题。不太适合「帮我查一下天气」「翻译这段文字」这类纯信息任务。那是搜索框该干的事。
-
-**Q：为什么我的问题被「消解」了？**
-
-A：因为百分之八十的问题本身是错的。你说「自媒体有多容易做」，「容易」没定义，A 定义和 B 定义差十倍。Taxue 会先帮你定义清楚，这个问题才值得被回答。这不是在跟你抬杠，这是决策的基本功。
-
-### v3.4.2 更新（2026-08-04）
-
-**求职系列全量同步，家族版本统一为 3.1.0**（`taxue-job-search` 仍为 2.2）。
-
-- **简历产出层落地**：`master.json` 母版 → `custom.json` 投递派生 → 独立 HTML（浏览器打印 PDF）+ ATS 纯文本 + 页数估算
-- **工具脚本**：`render_resume.py`、`jd_resume_match.py`；模板与版式在 `assets/`
-- **版本约定**：`versions/YYYY-MM-DD_公司_岗位/` 归档，已投版本不可变；母版只增不减
-- **主入口增强**：人群 8 类 / 行业 8 类策略表、量化闭环检查点（面试率/匹配分回跳）
-- **子技能 references + scripts 整目录发布**（替换仓库内旧薄 SKILL 单文件）
-- README 视觉刷新：Hero + 职业产出链路 SVG（`assets/readme/`）
-
-### v3.4.1 更新
-
-主入口从路由器升级为决策触发器。「目标 + 约束 + 调度」三位一体：演绎引擎替代固定模板，默会知识优先，复杂题可并行多 Skill，连招无缝衔接。
-
-### v3.4 更新
-
-#### 路由性能优化（主入口瘦身）
-
-**主入口从 193 行降到 118 行（减 39%）**，冷启动 token 减半，路由速度提升。成长日志外迁到 `taxue/CHANGELOG.md`，主入口只留指针，不占路由上下文。输出风格节压缩为指针加声线分化表，完整规则在 `references/shared-rules.md` 按需加载。7 个子 skill 的风格引用从「主入口语气表」改为 `shared-rules.md`，消除三处重复维护。
-
-#### 路由准确性优化（description 补触发词）
-
-**离线基准 Top-1 从 90.2%（37/41）提升**，泛化测试通过。4 个子 skill 补口语化触发词：taxue-relate 补职场关系词（老板针对我/领导挑毛病/排挤/同事关系等），taxue-solve 补决策词（该不该辞职/走还是留等），taxue-insight 补结论验证词（结论成立吗/站得住脚吗等），taxue-material 补素材缺失词（找不到好句子/写东西没素材等）。taxue-career-offer 补「该不该接受 offer」精确匹配。
-
-#### patterns.md grep 精确化
-
-主入口 grep 指令改为 `grep -E` 精确匹配「适用：」行，消除 `grep taxue` 命中所有 taxue-xxx 的污染。
-
-### v3.3 更新
-
-#### 路由优化（主入口）
-
-**伪问题拦截**：空泛的「怎么赚钱」重路由 `taxue-business`；空泛的「怎么消除焦虑」重路由 `taxue-calm`，不再卡在入口空转。
-
-**信息不足拦截增强**：抽象的「有没有什么方法」「该不该」先追问具体上下文再路由，预计减少 30% 误路由。
-
-新增 `references/shared-rules.md`，统一语言规则、输出风格三层结构、对话信号检测，所有子 skill 继承。
-
-#### 子 Skill 内容升级（7 个）
-
-| Skill | 版本 | 变更 |
-|-------|------|------|
-| **taxue-insight** | v2.9 升级到 **v3.0** | 四视角路由：本质/结构/共情/历史。不同问题用不同视角 |
-| **taxue-roundtable** | v2.8 升级到 **v3.1** | 全面重写为多模式讨论引擎。4 种模式，10 角色库，钢人原则 |
-| **taxue-relate** | v3.1 升级到 **v3.2** | 新增谈判关系。场景化脚本。禁忌表（5 条废话） |
-| **taxue-solve** | v3.1 升级到 **v3.2** | 新增「剥壳看结构」步骤。方案模板 4 到 6 元素 |
-| **taxue-breakdown** | v3.1 | 移除模板输出，简化反模式 |
-| **taxue-business** | v3.1 | 新增「高频假设错误」节，反模式第 4 条 |
-| **taxue-speak** | v2.8 | 重构为单步直接路由，框架定义外移 |
-
-### 完整版本历史
-
-| 版本 | 更新 | 日期 |
-|------|------|------|
-| **v3.4.2** | 求职系列 3.1.0 全量同步。简历产出层（母版→HTML/PDF/ATS/匹配）。README 视觉刷新。 | 2026-08-04 |
-| **v3.4.1** | 主入口升级为决策触发器。演绎引擎、默会知识优先、多 Skill 并行、连招衔接。 | 2026-07-12 |
-| **v3.4** | 主入口瘦身（193 到 118 行，token 减半）。触发词补全，基准 Top-1 到 100%。 | 2026-07-06 |
-| **v3.3** | 路由优化（伪问题+信息不足拦截）。7 个子 Skill 升级：insight v3.0、roundtable v3.1、relate v3.2、solve v3.2、breakdown/business/speak 改进。shared-rules.md 抽取。 | 2026-06-15 |
-| v3.2 | 7 个子 Skill 升级至 v3.1，save v3.2（记忆时效分层），主入口 v2.13 | 2026-06 |
-| v3.1 | save v3.1 记忆时效分层（永久/周期/一次性） | 2026-06 |
-| v3.0 | 7 个子 Skill 输出风格重构，对话信号全局检测，消解前置，连招建议 | 2026-06 |
-| v2.12 | 入口参考文件索引，渐进式信息披露 | 2026-06-08 |
-| v2.11 | 输出风格三层化，9 个独立人格声线 | 2026-06-08 |
-| v2.10 | 17 级优先级路由表，冲突消解规则 | 2026-06-05 |
-| v2.9 | 新增行业认知引擎，路由扩展 | 2026-06 |
-| v2.8 | 6 个子 Skill 升级，反模式声明，案例外移 | 2026-06 |
-| v2.7 | 入口纯路由化，130 到 35 行，3-5 到 1 轮推理 | 2026-06 |
-
-## 杂项 Skill（misc/）
-
-决策系列之外的工具型 Skill 统一放在 `misc/` 目录，与 `taxue-*` 决策系列互不干扰。这里的 Skill 不参与决策路由，各管各的事，按需直接调用。
-
-### meme-interpreter（网络梗解读）
-
-解读网络梗、流行语、表情包、圈层黑话与热点事件产生的网络表达，还原其在真实语境中的完整含义：是什么、从哪里来、如何传播、为什么流行、现在怎么用。
-
-- 内置六个免认证数据源直查：itotii 梗百科、百度百科、中文维基、Urban Dictionary、Know Your Meme，以及 B站/百度/头条热榜聚合
-- `all` 按中英文自动路由；`hot` 判断新梗出圈背景；词条缓存 6 小时，热榜缓存 10 分钟
-- 查不到或需深度考据时转 web_search 定向查询（萌娘百科、知乎等）
-- 触发：/meme-interpreter、/梗解读，或直接问「这个梗什么意思」
-
-### License
-
-MIT License
-
----
-
-> A good skill does not make AI more complex. It makes complex things simple. Type `/taxue` and begin.
->
-> 好的 Skill 不是让 AI 更复杂，是帮你把复杂的事情变简单。输入 `/taxue`，开始。
-</content>
+Career sub-skills from older releases have been consolidated into `taxue-career` v3.7.0; earlier release assets are superseded.

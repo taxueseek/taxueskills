@@ -1,0 +1,4 @@
+interface:
+  display_name: "系统性个人诊断"
+  short_description: "基于可访问资料对用户做系统诊断，给出3-5年轨迹建议"
+  default_prompt: "对我做一次系统性诊断，给出未来3-5年最重要的改变"

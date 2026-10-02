@@ -1,0 +1,312 @@
+{
+  "version": "4.1.0",
+  "description": "踏雪子技能注册表 — 路由信号单点真源（12 子技能）。主入口路由表从此派生；combo_exits 与 combo_map.json 的 next 集合保持一致。",
+  "updated": "2026-10-02",
+  "skills": {
+    "diagnosis": {
+      "signal": "系统性诊断/商业判断/多视角碰撞",
+      "description": "诊断 + 商业判断 + 多视角碰撞",
+      "aliases": [
+        "系统性诊断",
+        "全面诊断",
+        "人生诊断",
+        "体检",
+        "把把脉",
+        "3-5年",
+        "全面盘点",
+        "重新审视",
+        "商业判断",
+        "值不值得做",
+        "生意",
+        "商业模式",
+        "能不能做",
+        "盈利",
+        "多视角碰撞",
+        "盲区",
+        "多角度",
+        "换个角度",
+        "还有什么"
+      ],
+      "combo_exits": [
+        "solve",
+        "state",
+        "industry",
+        "career",
+        "calm",
+        "content"
+      ]
+    },
+    "solve": {
+      "signal": "卡住/纠结/洗清问题/关系沟通/表达",
+      "description": "解决 + 关系沟通 + 表达",
+      "aliases": [
+        "卡住",
+        "纠结",
+        "想不清楚",
+        "怎么办",
+        "迷茫",
+        "洗清问题",
+        "拆成执行步骤",
+        "怎么执行",
+        "步骤",
+        "落地",
+        "计划",
+        "安排",
+        "关系",
+        "沟通",
+        "冲突",
+        "同事",
+        "老板",
+        "朋友",
+        "表达",
+        "演讲",
+        "汇报",
+        "发言",
+        "述职"
+      ],
+      "combo_exits": [
+        "insight",
+        "diagnosis",
+        "build",
+        "industry",
+        "career",
+        "calm",
+        "content",
+        "state"
+      ]
+    },
+    "insight": {
+      "signal": "一句话看透本质",
+      "description": "看透本质 — 结构穿透",
+      "aliases": [
+        "本质",
+        "核心",
+        "根因",
+        "其实"
+      ],
+      "combo_exits": [
+        "diagnosis",
+        "calm",
+        "solve",
+        "content",
+        "industry"
+      ]
+    },
+    "career": {
+      "signal": "职业规划/面试/转行/简历/Offer/入职/求职失败",
+      "description": "职业系统 — 方向到行动（含子场景分发）",
+      "aliases": [
+        "职业",
+        "工作",
+        "转行",
+        "面试",
+        "跳槽",
+        "简历",
+        "resume",
+        "写简历",
+        "jd",
+        "offer",
+        "谈薪",
+        "薪资",
+        "入职",
+        "试用期",
+        "新工作",
+        "适应",
+        "被拒",
+        "失败",
+        "没面上",
+        "方向",
+        "选哪个",
+        "犹豫",
+        "offer选择",
+        "渠道",
+        "内推",
+        "投递",
+        "投简历"
+      ],
+      "combo_exits": [
+        "learn",
+        "content",
+        "solve",
+        "industry",
+        "calm",
+        "job-search",
+        "state"
+      ]
+    },
+    "job-search": {
+      "signal": "查在招岗位/搜招聘/找工作",
+      "description": "真实在招岗位搜索 — 双引擎交叉验证",
+      "aliases": [
+        "搜招聘",
+        "找岗位",
+        "查在招岗位",
+        "有没有招聘信息",
+        "有招人的吗",
+        "国企招聘",
+        "招聘",
+        "岗位",
+        "在招",
+        "报名",
+        "招人",
+        "专科能报什么",
+        "BOSS直聘"
+      ],
+      "combo_exits": [
+        "career",
+        "industry",
+        "state"
+      ]
+    },
+    "content": {
+      "signal": "内容创作/选题/标题/流量",
+      "description": "内容创作 + 流量",
+      "aliases": [
+        "选题",
+        "标题",
+        "文章",
+        "文案",
+        "内容",
+        "流量",
+        "涨粉",
+        "阅读量",
+        "曝光",
+        "增长"
+      ],
+      "combo_exits": [
+        "learn",
+        "solve",
+        "insight",
+        "state"
+      ]
+    },
+    "industry": {
+      "signal": "行业调研/用户研究/竞品分析",
+      "description": "行业研究 + 用户研究",
+      "aliases": [
+        "行业",
+        "赛道",
+        "竞争",
+        "市场",
+        "趋势",
+        "用户研究",
+        "用户画像",
+        "目标用户",
+        "竞品分析",
+        "市场调研",
+        "persona",
+        "访谈",
+        "为谁而做"
+      ],
+      "combo_exits": [
+        "diagnosis",
+        "solve",
+        "content",
+        "state",
+        "career"
+      ]
+    },
+    "learn": {
+      "signal": "学习方法/记不住/素材/系统学习课题",
+      "description": "学习方法论 + 素材管理 + 连续学习",
+      "aliases": [
+        "学习",
+        "记不住",
+        "读书",
+        "知识",
+        "理解",
+        "系统学习",
+        "带我学",
+        "继续学",
+        "学习档案",
+        "课题复盘",
+        "知识库",
+        "个人知识库",
+        "素材",
+        "案例",
+        "数据",
+        "金句",
+        "例子"
+      ],
+      "combo_exits": [
+        "content",
+        "career",
+        "solve",
+        "insight"
+      ]
+    },
+    "shopping": {
+      "signal": "购物决策/家居避坑",
+      "description": "购物决策 + 家居避坑",
+      "aliases": [
+        "购物",
+        "买什么",
+        "值得买",
+        "数码",
+        "家居",
+        "家电",
+        "装修",
+        "买房"
+      ],
+      "combo_exits": [
+        "state",
+        "diagnosis"
+      ]
+    },
+    "calm": {
+      "signal": "情绪处理/焦虑/内耗",
+      "description": "情绪处理 — 焦虑到平静",
+      "aliases": [
+        "焦虑",
+        "崩溃",
+        "失眠",
+        "内耗",
+        "压力"
+      ],
+      "combo_exits": [
+        "solve",
+        "insight",
+        "diagnosis",
+        "career",
+        "state"
+      ]
+    },
+    "state": {
+      "signal": "存档/继续上次/笔记归档",
+      "description": "状态存档 + 笔记归档",
+      "aliases": [
+        "继续上次",
+        "接着上次",
+        "上次到哪了",
+        "恢复存档",
+        "存档",
+        "记下来",
+        "记下这个决定",
+        "复盘"
+      ],
+      "combo_exits": [
+        "solve",
+        "insight",
+        "content",
+        "build"
+      ]
+    },
+    "build": {
+      "signal": "固化流程/做工具",
+      "description": "工具建设 — 经验到系统",
+      "aliases": [
+        "固化",
+        "工具",
+        "自动化",
+        "流程",
+        "模板"
+      ],
+      "combo_exits": [
+        "state",
+        "solve",
+        "learn",
+        "insight"
+      ]
+    }
+  }
+}

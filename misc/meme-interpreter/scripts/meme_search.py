@@ -23,6 +23,9 @@ import hashlib
 import html as html_mod
 import json
 import os
+from pathlib import Path
+import socket
+import ipaddress
 import re
 import sys
 import time
@@ -42,6 +45,8 @@ UA = (
 
 
 def cache_get(key, ttl=TTL):
+    if not re.fullmatch(r"[a-z_0-9]+", key):
+        return None
     path = os.path.join(CACHE_DIR, key + ".json")
     if not os.path.exists(path):
         return None
@@ -56,13 +61,28 @@ def cache_get(key, ttl=TTL):
 
 
 def cache_set(key, payload):
+    if not re.fullmatch(r"[a-z_0-9]+", key):
+        raise ValueError(f"非法缓存 key: {key}")
     os.makedirs(CACHE_DIR, exist_ok=True)
-    path = os.path.join(CACHE_DIR, key + ".json")
-    with open(path, "w") as f:
-        json.dump({"ts": time.time(), "payload": payload}, f, ensure_ascii=False)
+    Path(CACHE_DIR, key + ".json").write_text(
+        json.dumps({"ts": time.time(), "payload": payload}, ensure_ascii=False))
+
+
+_ALLOWED_HOSTS = {"geng.itotii.com", "baike.baidu.com", "zh.wikipedia.org", "api.urbandictionary.com", "knowyourmeme.com"}
+
+
+def _validate_url(url):
+    """仅允许 http/https 到白名单站点；拒绝其他协议、主机与受限制地址。"""
+    parsed = urllib.parse.urlparse(url)
+    if parsed.scheme not in ("http", "https") or (parsed.hostname or "") not in _ALLOWED_HOSTS:
+        raise ValueError(f"不允许的请求目标: {url}")
+    ip_obj = ipaddress.ip_address(socket.getaddrinfo(parsed.hostname, None)[0][4][0])
+    if not ip_obj.is_global or ip_obj.is_private or ip_obj.is_loopback or ip_obj.is_reserved or ip_obj.is_link_local:
+        raise ValueError(f"解析到受限制地址: {ip_obj}")
 
 
 def http_get(url, timeout=TIMEOUT, headers=None):
+    _validate_url(url)
     h = {"User-Agent": UA}
     if headers:
         h.update(headers)

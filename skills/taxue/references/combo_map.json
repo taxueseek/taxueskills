@@ -1,0 +1,391 @@
+{
+  "description": "taxue 连招导航地图 v4（12 子技能）。key=子技能名，value=结论信号→下一技能映射。子技能收束后根据结论信号推荐下一步；无匹配信号或指向自身时干净收束，不硬连招。",
+  "trigger_rule": "主入口在收束或任务后导航时读取（见主 SKILL.md「任务后导航」）。不在子 skill 执行中途弹出。",
+  "default_hint_template": "接下来可以看看{next_skill_value}。",
+  "combos": {
+    "taxue-diagnosis": {
+      "need_action": {
+        "next": "taxue-solve",
+        "reason": "诊断结论明确，拆成可执行的第一步",
+        "hint": "第一步怎么拆，用 /taxue-solve 走一遍"
+      },
+      "need_tracking": {
+        "next": "taxue-state",
+        "reason": "长期轨迹需要存档跟踪，定期复诊",
+        "hint": "这个诊断值得存档，/taxue-state 记下来"
+      },
+      "need_industry": {
+        "next": "taxue-industry",
+        "reason": "诊断指向行业层面，需要看行业全景",
+        "hint": "行业层面用 /taxue-industry 先看全景"
+      },
+      "need_career": {
+        "next": "taxue-career",
+        "reason": "诊断指向职业选择，需要具体路径",
+        "hint": "职业这层用 /taxue-career 单独拆"
+      },
+      "need_deeper_data": {
+        "next": "taxue-industry",
+        "reason": "关键维度证据不足，需要补充调研",
+        "hint": "缺的那块信息，/taxue-industry 补调研"
+      },
+      "emotional_block": {
+        "next": "taxue-calm",
+        "reason": "判断清楚了但情绪卡住",
+        "hint": "卡住的那个点，/taxue-calm 先处理"
+      },
+      "need_content": {
+        "next": "taxue-content",
+        "reason": "诊断结论可以变成内容",
+        "hint": "这个结论能写成内容，/taxue-content 试试"
+      },
+      "need_user_research": {
+        "next": "taxue-industry",
+        "reason": "商业判断需要用户需求支撑",
+        "hint": "用户需求用 /taxue-industry 研究"
+      }
+    },
+    "taxue-solve": {
+      "direction_clear": {
+        "next": "taxue-insight",
+        "reason": "方向清楚了，看一眼本质确认没有盲区",
+        "hint": "方向定了，/taxue-insight 看一眼本质"
+      },
+      "still_stuck": {
+        "next": "taxue-diagnosis",
+        "reason": "一个人想不透，多视角碰撞一下",
+        "hint": "想不透就碰撞，/taxue-diagnosis 多视角"
+      },
+      "need_execute": {
+        "next": "taxue-build",
+        "reason": "方案需要固化成可复用流程",
+        "hint": "方案能固化，/taxue-build 做成流程"
+      },
+      "need_industry": {
+        "next": "taxue-industry",
+        "reason": "问题涉及行业认知，先看全景",
+        "hint": "行业认知用 /taxue-industry"
+      },
+      "need_business": {
+        "next": "taxue-diagnosis",
+        "reason": "问题本质是商业判断",
+        "hint": "商业判断用 /taxue-diagnosis"
+      },
+      "need_career": {
+        "next": "taxue-career",
+        "reason": "问题涉及职业方向",
+        "hint": "职业方向用 /taxue-career"
+      },
+      "emotional_block": {
+        "next": "taxue-calm",
+        "reason": "真正卡住的是情绪不是问题",
+        "hint": "先处理卡住的那个东西，/taxue-calm"
+      },
+      "need_content": {
+        "next": "taxue-content",
+        "reason": "解决方案涉及内容创作",
+        "hint": "这个想法能变成内容，/taxue-content"
+      },
+      "need_state": {
+        "next": "taxue-state",
+        "reason": "决策需要记录跟踪",
+        "hint": "这个决定用 /taxue-state 记下来"
+      }
+    },
+    "taxue-insight": {
+      "blind_spots_found": {
+        "next": "taxue-diagnosis",
+        "reason": "发现盲区，多视角验证一下",
+        "hint": "盲区用 /taxue-diagnosis 验证"
+      },
+      "need_decision": {
+        "next": "taxue-diagnosis",
+        "reason": "看透了本质，需要做一个商业判断",
+        "hint": "商业判断用 /taxue-diagnosis"
+      },
+      "emotional_block": {
+        "next": "taxue-calm",
+        "reason": "本质清楚但情绪卡住",
+        "hint": "情绪卡住用 /taxue-calm"
+      },
+      "concept_unclear": {
+        "next": "taxue-solve",
+        "reason": "核心概念还没拆清楚，先洗净问题",
+        "hint": "概念没清，/taxue-solve 先洗"
+      },
+      "need_content": {
+        "next": "taxue-content",
+        "reason": "洞察有了，变成可发布的内容",
+        "hint": "洞察变内容，/taxue-content"
+      },
+      "need_industry": {
+        "next": "taxue-industry",
+        "reason": "洞察需要行业数据验证",
+        "hint": "行业数据用 /taxue-industry 验证"
+      },
+      "need_action": {
+        "next": "taxue-solve",
+        "reason": "本质看透了，拆成行动",
+        "hint": "拆成行动用 /taxue-solve"
+      }
+    },
+    "taxue-career": {
+      "need_skill": {
+        "next": "taxue-learn",
+        "reason": "定位清楚了但技能不足",
+        "hint": "补技能用 /taxue-learn"
+      },
+      "need_portfolio": {
+        "next": "taxue-content",
+        "reason": "需要作品集来支撑",
+        "hint": "作品集用 /taxue-content 做"
+      },
+      "offer_in_hand": {
+        "next": "taxue-solve",
+        "reason": "有 offer 需要比较决策",
+        "hint": "Offer 比较用 /taxue-solve"
+      },
+      "need_industry": {
+        "next": "taxue-industry",
+        "reason": "职业方向需要行业数据支撑",
+        "hint": "行业数据用 /taxue-industry"
+      },
+      "need_relationship": {
+        "next": "taxue-solve",
+        "reason": "职业问题涉及人际关系",
+        "hint": "跟对方谈用 /taxue-solve"
+      },
+      "emotional_block": {
+        "next": "taxue-calm",
+        "reason": "职业焦虑需要先处理情绪",
+        "hint": "焦虑用 /taxue-calm 先处理"
+      },
+      "need_job_search": {
+        "next": "taxue-job-search",
+        "reason": "方向定了，开始搜真实岗位",
+        "hint": "搜岗位用 /taxue-job-search"
+      },
+      "need_state": {
+        "next": "taxue-state",
+        "reason": "求职进度需要记录跟踪",
+        "hint": "求职进度用 /taxue-state 记"
+      }
+    },
+    "taxue-job-search": {
+      "found_matches": {
+        "next": "taxue-career",
+        "reason": "有匹配岗位了，进入简历与投递",
+        "hint": "简历与投递用 /taxue-career"
+      },
+      "need_resume": {
+        "next": "taxue-career",
+        "reason": "岗位有了但简历对不上 JD",
+        "hint": "简历与 JD 匹配用 /taxue-career"
+      },
+      "need_interview": {
+        "next": "taxue-career",
+        "reason": "要准备面试",
+        "hint": "面试准备用 /taxue-career"
+      },
+      "few_matches": {
+        "next": "taxue-career",
+        "reason": "岗位太少，方向或条件要调",
+        "hint": "调方向用 /taxue-career"
+      },
+      "need_industry": {
+        "next": "taxue-industry",
+        "reason": "想先看清赛道再投",
+        "hint": "看赛道用 /taxue-industry"
+      },
+      "need_state": {
+        "next": "taxue-state",
+        "reason": "投递进度需要跟踪",
+        "hint": "记录进度用 /taxue-state"
+      }
+    },
+    "taxue-content": {
+      "need_material": {
+        "next": "taxue-learn",
+        "reason": "写内容缺素材",
+        "hint": "素材用 /taxue-learn 找"
+      },
+      "topic_rejected": {
+        "next": "taxue-learn",
+        "reason": "选题没过门禁，回去找更好的选题",
+        "hint": "选题用 /taxue-learn 重新找"
+      },
+      "need_style": {
+        "next": "taxue-solve",
+        "reason": "文风或表达方向需要先理清",
+        "hint": "文风用 /taxue-solve 理"
+      },
+      "need_insight": {
+        "next": "taxue-insight",
+        "reason": "内容缺乏穿透力，需要更深的洞察",
+        "hint": "底层逻辑用 /taxue-insight"
+      },
+      "need_state": {
+        "next": "taxue-state",
+        "reason": "内容策略需要记录跟踪",
+        "hint": "内容策略用 /taxue-state 记"
+      }
+    },
+    "taxue-industry": {
+      "industry_clear": {
+        "next": "taxue-diagnosis",
+        "reason": "行业看清楚了，做商业判断",
+        "hint": "商业判断用 /taxue-diagnosis"
+      },
+      "opportunity_found": {
+        "next": "taxue-diagnosis",
+        "reason": "发现了一个值得深挖的机会",
+        "hint": "机会用 /taxue-diagnosis 深挖"
+      },
+      "industry_not_viable": {
+        "next": "taxue-solve",
+        "reason": "行业数据不支持，需要重新想方向",
+        "hint": "方向用 /taxue-solve 重新理"
+      },
+      "need_content": {
+        "next": "taxue-content",
+        "reason": "行业调研变成可发布的内容",
+        "hint": "调研变内容用 /taxue-content"
+      },
+      "need_state": {
+        "next": "taxue-state",
+        "reason": "行业数据值得存档跟踪",
+        "hint": "行业分析用 /taxue-state 存"
+      },
+      "need_career": {
+        "next": "taxue-career",
+        "reason": "行业数据指向职业选择",
+        "hint": "职业机会用 /taxue-career"
+      }
+    },
+    "taxue-learn": {
+      "learning_done": {
+        "next": "taxue-content",
+        "reason": "学了要输出，用输出倒逼输入",
+        "hint": "输出用 /taxue-content 写"
+      },
+      "need_career": {
+        "next": "taxue-career",
+        "reason": "学完要用在职业发展上",
+        "hint": "求职用 /taxue-career"
+      },
+      "need_traffic": {
+        "next": "taxue-content",
+        "reason": "学的内容跟流量/运营相关",
+        "hint": "流量用 /taxue-content"
+      },
+      "need_execute": {
+        "next": "taxue-solve",
+        "reason": "学完要落地，拆成行动步骤",
+        "hint": "行动步骤用 /taxue-solve 拆"
+      },
+      "need_insight": {
+        "next": "taxue-insight",
+        "reason": "学习中发现了有意思的模式",
+        "hint": "模式用 /taxue-insight 看"
+      }
+    },
+    "taxue-shopping": {
+      "decision_made": {
+        "next": "taxue-state",
+        "reason": "购物决策完成，存档",
+        "hint": "决策用 /taxue-state 存"
+      },
+      "need_comparison": {
+        "next": "taxue-diagnosis",
+        "reason": "购物决策需要商业判断",
+        "hint": "值不值用 /taxue-diagnosis"
+      }
+    },
+    "taxue-calm": {
+      "emotion_processed": {
+        "next": "taxue-solve",
+        "reason": "情绪处理完了，回到问题本身",
+        "hint": "回到问题用 /taxue-solve"
+      },
+      "direction_clear": {
+        "next": "taxue-insight",
+        "reason": "情绪理清了，现在可以看本质了",
+        "hint": "看本质用 /taxue-insight"
+      },
+      "need_business": {
+        "next": "taxue-diagnosis",
+        "reason": "情绪背后是商业判断没落地",
+        "hint": "商业判断用 /taxue-diagnosis"
+      },
+      "need_relationship": {
+        "next": "taxue-solve",
+        "reason": "情绪来源是关系问题",
+        "hint": "关系卡点用 /taxue-solve"
+      },
+      "need_career": {
+        "next": "taxue-career",
+        "reason": "情绪来源是职业焦虑",
+        "hint": "职业方向用 /taxue-career"
+      },
+      "need_state": {
+        "next": "taxue-state",
+        "reason": "情绪处理值得记录",
+        "hint": "情绪处理用 /taxue-state 记"
+      }
+    },
+    "taxue-state": {
+      "restored": {
+        "next": "taxue-solve",
+        "reason": "从存档恢复，继续之前的问题",
+        "hint": "继续问题用 /taxue-solve"
+      },
+      "pattern_found": {
+        "next": "taxue-insight",
+        "reason": "从历史记录中发现了规律",
+        "hint": "规律用 /taxue-insight 看"
+      },
+      "need_execute": {
+        "next": "taxue-solve",
+        "reason": "存档里有未完成的行动",
+        "hint": "行动用 /taxue-solve 拆"
+      },
+      "need_traffic": {
+        "next": "taxue-content",
+        "reason": "存档涉及内容表现数据",
+        "hint": "数据用 /taxue-content 看"
+      },
+      "state_done": {
+        "next": "taxue-solve",
+        "reason": "存档完成，回到问题本身",
+        "hint": "回到问题用 /taxue-solve"
+      },
+      "need_build": {
+        "next": "taxue-build",
+        "reason": "存档中发现可固化的模式",
+        "hint": "模式用 /taxue-build 固化"
+      }
+    },
+    "taxue-build": {
+      "tool_created": {
+        "next": "taxue-state",
+        "reason": "工具创建完成，记录存档",
+        "hint": "工具用 /taxue-state 存"
+      },
+      "need_testing": {
+        "next": "taxue-solve",
+        "reason": "工具需要测试验证",
+        "hint": "测试用 /taxue-solve"
+      },
+      "need_documentation": {
+        "next": "taxue-learn",
+        "reason": "工具需要文档说明",
+        "hint": "文档用 /taxue-learn 写"
+      },
+      "pattern_clear": {
+        "next": "taxue-insight",
+        "reason": "固化过程中发现了更深的模式",
+        "hint": "模式用 /taxue-insight 看"
+      }
+    }
+  }
+}
